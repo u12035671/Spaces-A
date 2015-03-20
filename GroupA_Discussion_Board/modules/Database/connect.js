@@ -30,10 +30,10 @@ var cosTest = new Space({ name: 'test3' });
 cosTest.speak();
 
 // Save cosTest to the database each time server is started
-cosTest.save(function (err, cosTest) {
+/*cosTest.save(function (err, cosTest) {
     if (err) return console.error(err);
     cosTest.speak();
-});
+});*/
 
 // Display all in Spaces model
 Space.find(function (err, spaces) {
