@@ -45,3 +45,26 @@ exports.createBuzzSpace = function (academicYear,isOpen,moduleID,name,adminUsers
 
     return newBuzzSpace;
 };
+
+//Very unsure, just added rough outline code
+exports.assignAdministrator = function (academicYear,isOpen,moduleID,name,adminUsers,newAdmin) {
+
+    var sp = require('../Database/connect.js');
+    //var newBuzzSpace = {};
+    //check if the module exists
+    db.find({'moduleID':moduleID},function (err,result) {
+       if (err) {
+			throw new Error("NoSuchBuzzSpaceException");
+		} else {
+			// check if user is an admin for buzz space
+			if (isAuthorized(userId, moduleId)) {
+				authorizedAdminList.add(newAdmin);
+			} else {
+				throw new Error("NotAuthorizedException");
+			}
+			obj = result;
+		})
+	}
+
+    return authorizedAdminList;
+};
