@@ -62,8 +62,8 @@ exports.assignAdministrator = function (academicYear,isOpen,moduleID,name,adminU
 			} else {
 				throw new Error("NotAuthorizedException");
 			}
-		})
-	}
+		}
+	})
 
     return adminUsers;
 };
@@ -74,6 +74,7 @@ exports.removeAdministrator = function (moduleID, adminToRemove, adminUsers, nam
 	//check if module esxists
 	db.find({'moduleID':moduleID},function (err, result) {
 		if(err)
+        {
 			throw new Error("NoSuchBuzzSpaceException");
 		} else {
 			//check if user is an admin for this buzz space
@@ -82,8 +83,8 @@ exports.removeAdministrator = function (moduleID, adminToRemove, adminUsers, nam
 			} else {
 				throw new Error("NotAuthorizedException");
 			}
-		})
-	}
+		}
+	})
 		
 	return adminUsers;
 };
