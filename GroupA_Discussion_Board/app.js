@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 //**********************Include various modules from different groups here******************************
 var spaces = require('./modules/Spaces/spaces.js');
+//console.log(spaces.createBuzzSpace(2015,true,'aaa','Jan','Koos'));
+console.log(spaces.closeBuzzSpace('1','aaa'));
 //console.log(spaces.assignAdministrator());
 //console.log(spaces.removeAdministrator());
 //**********************Include various modules from different groups here******************************
