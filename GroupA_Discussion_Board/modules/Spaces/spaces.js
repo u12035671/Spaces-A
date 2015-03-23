@@ -58,13 +58,32 @@ exports.assignAdministrator = function (academicYear,isOpen,moduleID,name,adminU
 		} else {
 			// check if user is an admin for buzz space
 			if (isAuthorized(userId, moduleId)) {
-				authorizedAdminList.add(newAdmin);
+				adminUsers.add(newAdmin);
 			} else {
 				throw new Error("NotAuthorizedException");
 			}
-			obj = result;
 		})
 	}
 
-    return authorizedAdminList;
+    return adminUsers;
+};
+
+exports.removeAdministrator = function (moduleID, adminToRemove, adminUsers, name) {
+	
+	var sp = require('../Database/connect.js');
+	//check if module esxists
+	db.find({'moduleID':moduleID},function (err, result) {
+		if(err)
+			throw new Error("NoSuchBuzzSpaceException");
+		} else {
+			//check if user is an admin for this buzz space
+			if (isAuthorized(userId, moduleId)) {
+				adminUsers.remove(adminToRemove);
+			} else {
+				throw new Error("NotAuthorizedException");
+			}
+		})
+	}
+		
+	return adminUsers;
 };
