@@ -1,6 +1,7 @@
 /**
  * Created by Jaco-Louis on 2015/03/17.
  */
+
 /*
     This module will be used to create and close various Buzz Spaces
  */
@@ -8,16 +9,12 @@
 var mongoose = require('mongoose');
 var sp = require('../Database/connect.js');
 // Schema
-//===================Simple testing using a schema example
-// Create schema
 var spacesSchema = mongoose.Schema({
     name: String,
     academicYear: String,
     isOpen: String,
-    moduleID: String
-
-    //academicYear,isOpen,moduleID,name,adminUsers
-
+    moduleID: String,
+    adminUsers : Array
 })
 // Add method to schema
 spacesSchema.methods.speak = function () {
@@ -29,21 +26,6 @@ spacesSchema.methods.speak = function () {
 
 // Compile schema into a model (class that constructs documents)
 var Space = mongoose.model('Spaces', spacesSchema)
-// create object of type Space
-//var cosTest = new Space({ name: 'test3' });
-//cosTest.speak();
-
-/*cosTest.save(function (err, cosTest) {
- if (err) return console.error(err);
- cosTest.speak();
- });*/
-
-// Display all in Spaces model
-Space.find(function (err, spaces) {
-    if (err) return console.error(err);
-    //console.log(spaces);
-})
-
 // end schema
 
 function isAuthorized(userId, moduleId) { return true; };
@@ -74,7 +56,6 @@ exports.closeBuzzSpace = function (userId, moduleId) {
 
                 }
 
-
 			} else {
 				throw new Error("NotAuthorizedException");
 			}
@@ -90,12 +71,10 @@ exports.createBuzzSpace = function (academicYear,isOpen,moduleID,name,adminUsers
     var newBuzzSpace = new Space({academicYear:academicYear,isOpen:isOpen,moduleID:moduleID,name:name,adminUsers:adminUsers});
     //check if the module exists
     Space.findOne({moduleID:moduleID}, function (err,result) {
-        //console.log("result: " +  result);
         if (result == null) {
             console.log("Buzz space not yet created, able to insert");
             newBuzzSpace.save(function (err, cosTest) {
                 if (err) return console.error(err);
-
 
                 Space.find(function (err, spaces) {
                     if (err) return console.error(err);
@@ -118,19 +97,21 @@ exports.createBuzzSpace = function (academicYear,isOpen,moduleID,name,adminUsers
     return newBuzzSpace;
 };
 
-//Very unsure, just added rough outline code
-exports.assignAdministrator = function (academicYear,isOpen,moduleID,name,adminUsers,newAdmin) {
-
-    var sp = require('../Database/connect.js');
-    //var newBuzzSpace = {};
+exports.assignAdministrator = function (academicYear,isOpen,moduleID,name,adminUsers,newAdmin, userId) {
     //check if the module exists
-    Space.find({'moduleID':moduleID},function (err,result) {
-       if (err) {
-			throw new Error("NoSuchBuzzSpaceException");
+    Space.findOne({'moduleID':moduleID},function (err,result) {
+       if (result == null) {
+			//throw new Error("NoSuchBuzzSpaceException");
+           console.log("Could not find buzz space to close");
 		} else {
+           console.log("Found module to assign admin to");
 			// check if user is an admin for buzz space
-			if (isAuthorized(userId, moduleId)) {
-				adminUsers.add(newAdmin);
+			if (isAuthorized(userId, moduleID)) {
+                result.adminUsers.push(newAdmin);
+
+                result.save(function (err) {
+                    //res.send(result);
+                });
 			} else {
 				throw new Error("NotAuthorizedException");
 			}
@@ -140,23 +121,39 @@ exports.assignAdministrator = function (academicYear,isOpen,moduleID,name,adminU
     return adminUsers;
 };
 
-exports.removeAdministrator = function (moduleID, adminToRemove, adminUsers, name) {
-	
-	var sp = require('../Database/connect.js');
-	//check if module esxists
-	Space.find({'moduleID':moduleID},function (err, result) {
-		if(err)
-        {
-			throw new Error("NoSuchBuzzSpaceException");
-		} else {
-			//check if user is an admin for this buzz space
-			if (isAuthorized(userId, moduleId)) {
-				adminUsers.remove(adminToRemove);
-			} else {
-				throw new Error("NotAuthorizedException");
-			}
-		}
-	})
-		
-	return adminUsers;
+exports.removeAdministrator = function (userId, moduleID, adminToRemove) {
+
+    var obj = {};
+    Space.findOne({'moduleID':moduleID},function (err,result) {
+        if (result == null) {
+            //throw new Error("NoSuchBuzzSpaceException");
+            console.log("Could not find buzz space to remove admin from");
+        } else {
+            console.log("Found module to remove admin from");
+            // check if user is an admin for buzz space
+            if (isAuthorized(userId, moduleID)) {
+
+                // *******************************************
+                // Outline of how to find an admin, please fix
+                // *******************************************
+                var index = result.adminUsers.indexOf(adminToRemove);
+
+                if (index > -1) {
+                    result.adminUsers.splice(index, 1);
+                }
+                // *******************************************
+                // End of outline
+                // *******************************************
+
+                result.save(function (err) {
+                    //res.send(result);
+                });
+            } else {
+                throw new Error("NotAuthorizedException");
+            }
+        }
+        obj = result;
+    })
+
+    return obj;
 };

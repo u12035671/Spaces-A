@@ -7,10 +7,10 @@ var bodyParser = require('body-parser');
 
 //**********************Include various modules from different groups here******************************
 var spaces = require('./modules/Spaces/spaces.js');
-//console.log(spaces.createBuzzSpace(2015,true,'aaa','Jan','Koos'));
-console.log(spaces.closeBuzzSpace('1','aaa'));
-//console.log(spaces.assignAdministrator());
-//console.log(spaces.removeAdministrator());
+//console.log(spaces.createBuzzSpace(2015,true,'zzz','Jan',[{id:1},{id:2}]));
+//console.log(spaces.closeBuzzSpace('1','aaa'));
+//console.log(spaces.assignAdministrator('2015', true, 'zzz', 'Jan', [{id:1},{id:2}], {id:3}, '1'));
+console.log(spaces.removeAdministrator('1', 'zzz', {id:2}));
 //**********************Include various modules from different groups here******************************
 
 //console.log("Calling space create: " + spaces.createBuzzSpace()); Simple example of creating a space using function defined in Spaces module
