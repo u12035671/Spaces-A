@@ -141,6 +141,9 @@ exports.removeAdministrator = function (userId, moduleID, adminToRemove) {
                 if (index > -1) {
                     result.adminUsers.splice(index, 1);
                 }
+				if (index == -1) {
+					console.log("Could not find administrator to remove on the buzz space.");
+				}
                 // *******************************************
                 // End of outline
                 // *******************************************
