@@ -160,3 +160,38 @@ exports.removeAdministrator = function (userId, moduleID, adminToRemove) {
 
     return obj;
 };
+exports.isAdministrator = function(userId,adminUsers)
+{
+	db.findOne({'userId':userId})function(err,result)
+	{
+		if(err)
+		{
+			console.error(err);
+		}
+		else
+		{
+			//assuming admin users are sent via a array
+			var a  = adminUsers.indexOf(result);
+			if(a === -1)
+				return false;
+			else
+				return true;
+		}
+	}
+};
+exports.getProfileForUser = function(userId)
+{
+	
+	db.findOne({"userId":userId}), function (err,result)
+	{
+		//User id is sent through and findOne returns object of user with all users info
+		if(err)
+		{
+			console.error(err);
+		}
+		else
+		{
+			return result;
+		}
+	}
+};
