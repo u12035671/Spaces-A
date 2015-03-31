@@ -36,6 +36,11 @@ var Space = mongoose.model('Spaces', spacesSchema)
 
 function isAuthorized(userId, moduleId) { return true; };
 
+var closeBuzzSpaceParam = {
+	userId: String,
+	moduleId: String
+};
+
 exports.closeBuzzSpace = function (userId, moduleId) {
     var obj = {};
     // check if space exists
@@ -72,6 +77,13 @@ exports.closeBuzzSpace = function (userId, moduleId) {
     return obj;
 };
 
+var createBuzzSpaceParam = {
+	academicYear: String,
+	isOpen:true,
+	moduleId: String,
+	name: String,
+	adminUsers: Array
+};
 
 exports.createBuzzSpace = function (academicYear,isOpen,moduleID,name,adminUsers) {
     var newBuzzSpace = new Space({academicYear:academicYear,isOpen:isOpen,moduleID:moduleID,name:name,adminUsers:adminUsers});
