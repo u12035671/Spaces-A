@@ -1,0 +1,4 @@
+#1. The example.js file shows how other modules will have to interact with csds modeule
+
+#2. The LoginResponse.js files show how other modules will be able to get login response, which
+will be through a session 
