@@ -44,8 +44,8 @@ console.log(
 	})
 );
 spaces.closeBuzzSpace({
-	userId: '1',
-	moduleId: 'aaa',
+	userID: '2',
+	moduleID: 'aaa',
 	callback: function (err, response) {
 		if (err)
 			console.log(err);
@@ -61,24 +61,32 @@ console.log(
 		name: 'Jan', 
 		adminUsers: [{id:1},{id:2}], 
 		newAdmin: {id:3}, 
-		userId: '1'
+		userID: '1'
 	})
 );
+spaces.removeAdministrator({
+	userID: '1', 
+	moduleID: 'zzz', 
+	adminToRemove: {id:3},
+	callback: function (err, response) {
+		if (err)
+			console.log(err);
+		else
+			console.log(response);
+	}
+});
+spaces.isAdministrator({
+	userID: '3',
+	moduleID: 'zzz',
+	callback: function (err, response) {
+		if (err)
+			console.log(err);
+		else
+			console.log(response);
+	}
+});
 console.log(
-	spaces.removeAdministrator({
-		userId: '1', 
-		moduleID: 'zzz', 
-		adminToRemove: {id:2}
-	})
-);
-console.log(
-	spaces.isAdministrator({
-		userId: '1',
-		adminUsers: [{id:1}, {id:2}]
-	})
-);
-console.log(
-	spaces.getProfileForUser({userId: '1'})
+	spaces.getProfileForUser({userID: '1'})
 );
 *//*
 
