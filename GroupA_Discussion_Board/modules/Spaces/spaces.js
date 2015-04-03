@@ -162,7 +162,7 @@ exports.removeAdministrator = function (userId, moduleID, adminToRemove) {
 };
 exports.isAdministrator = function(userId,adminUsers)
 {
-	db.findOne({'userId':userId})function(err,result)
+	db.findOne({'userId':userId}), function(err,result)
 	{
 		if(err)
 		{
