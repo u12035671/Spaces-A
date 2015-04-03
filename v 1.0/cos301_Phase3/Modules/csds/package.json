@@ -8,5 +8,6 @@
   },
   "devDependencies": {
     "unit.js": "^1.1.3"
-  }
+  },
+  "main":"csds.js"
 }

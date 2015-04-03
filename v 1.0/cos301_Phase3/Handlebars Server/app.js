@@ -34,10 +34,52 @@ var connection = require('database'); //Initial connection to the database
  Test code for spaces
 
  *//*
-spaces.createBuzzSpace(2015,true,'ddd','Jan',[{id:1},{id:2}]);
-console.log(spaces.closeBuzzSpace('1','ccc'));
-console.log(spaces.assignAdministrator('2015', true, 'zzz', 'Jan', [{id:1},{id:2}], {id:3}, '1'));
-console.log(spaces.removeAdministrator('1', 'zzz', {id:2}));
+console.log(
+	spaces.createBuzzSpace({
+		academicYear: 2015,
+		isOpen: true,
+		moduleID: 'bbb',
+		name: 'Jan',
+		adminUsers: [{id:1},{id:2}]
+	})
+);
+spaces.closeBuzzSpace({
+	userId: '1',
+	moduleId: 'aaa',
+	callback: function (err, response) {
+		if (err)
+			console.log(err);
+		else
+			console.log(response);
+	}
+});
+console.log(
+	spaces.assignAdministrator({
+		academicYear: '2015', 
+		isOpen: true, 
+		moduleID: 'zzz', 
+		name: 'Jan', 
+		adminUsers: [{id:1},{id:2}], 
+		newAdmin: {id:3}, 
+		userId: '1'
+	})
+);
+console.log(
+	spaces.removeAdministrator({
+		userId: '1', 
+		moduleID: 'zzz', 
+		adminToRemove: {id:2}
+	})
+);
+console.log(
+	spaces.isAdministrator({
+		userId: '1',
+		adminUsers: [{id:1}, {id:2}]
+	})
+);
+console.log(
+	spaces.getProfileForUser({userId: '1'})
+);
 *//*
 
 /////////////////TONIA ADDED Testing of notification module
