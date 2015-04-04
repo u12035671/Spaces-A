@@ -34,49 +34,61 @@ spacesSchema.methods.speak = function () {
 var Space = mongoose.model('Spaces', spacesSchema)
 // end schema
 
-function isAuthorized(userId, moduleId) { return true; };
+function isAuthorized(userID, moduleID) { return true; };
 
-exports.closeBuzzSpace = function (userId, moduleId) {
-    var obj = {};
-    // check if space exists
-    Space.findOne({moduleID:moduleId}, function (err, result) {
-        if (err) {
-            throw new Error("NoSuchBuzzSpaceException");
-        } else {
-            // check if user is an admin for buzz space
-            if (isAuthorized(userId, moduleId)) {
-                if(result == null)
-                {
-                    // Module does not exist
-                    console.log("Did not found space that should be closed");
-                }
-                else
-                {
-                    //else module exists, update
-                    console.log("Found space that should be closed");
-                    result.isOpen = false;
-
-                    result.save(function (err) {
-                        //res.send(result);
-                    });
-
-                }
-
-            } else {
-                throw new Error("NotAuthorizedException");
-            }
-            obj = result;
-        }
-    });
-
-    return obj;
+//exports.closeBuzzSpace = function (userID, moduleID) {
+exports.closeBuzzSpace = function (closeBuzzSpaceRequest) {
+	// check if space exists
+	Space.findOne({moduleID: closeBuzzSpaceRequest.moduleID}, function (err, result) {
+		if (err) {
+			closeBuzzSpaceRequest.callback(err);
+		} else if (result == null) {
+			// Module does not exist
+			console.log("Did not find space that should be closed");
+			closeBuzzSpaceRequest.callback(new Error("NoSuchBuzzSpaceException"));
+		} else {
+			// check if user is an admin for buzz space
+			exports.isAdministrator({
+				userID: closeBuzzSpaceRequest.userID, 
+				moduleID: closeBuzzSpaceRequest.moduleID,
+				callback: function (error, response) {
+					if (error) {
+						closeBuzzSpaceRequest.callback(error);
+					} else if (response == false) {
+						console.log("Not an admin of this buzz space");
+						closeBuzzSpaceRequest.callback(new Error("NotAuthorizedException"));
+					} else {
+						//else module exists, update
+						console.log("Found space that should be closed");
+						result.isOpen = false;
+						
+						// save changes
+						result.save(function (err) {
+							//res.send(result);
+						});
+						console.log("Space closed successfully");
+						
+						closeBuzzSpaceRequest.callback(null, result);
+					}
+				}
+			});
+		}
+	});
 };
 
 
-exports.createBuzzSpace = function (academicYear,isOpen,moduleID,name,adminUsers) {
-    var newBuzzSpace = new Space({academicYear:academicYear,isOpen:isOpen,moduleID:moduleID,name:name,adminUsers:adminUsers});
+//exports.createBuzzSpace = function (academicYear,isOpen,moduleID,name,adminUsers) {
+exports.createBuzzSpace = function (createBuzzSpaceRequest) {
+	var newBuzzSpace = new Space({
+		academicYear: createBuzzSpaceRequest.academicYear,
+		isOpen: createBuzzSpaceRequest.isOpen,
+		moduleID: createBuzzSpaceRequest.moduleID,
+		name: createBuzzSpaceRequest.name,
+		adminUsers: createBuzzSpaceRequest.adminUsers
+	});
+	
     //check if the module exists
-    Space.findOne({moduleID:moduleID}, function (err,result) {
+    Space.findOne({moduleID: createBuzzSpaceRequest.moduleID}, function (err,result) {
         if (result == null) {
             console.log("Buzz space not yet created, able to insert");
             newBuzzSpace.save(function (err, cosTest) {
@@ -103,17 +115,18 @@ exports.createBuzzSpace = function (academicYear,isOpen,moduleID,name,adminUsers
     return newBuzzSpace;
 };
 
-exports.assignAdministrator = function (academicYear,isOpen,moduleID,name,adminUsers,newAdmin, userId) {
+//exports.assignAdministrator = function (academicYear,isOpen,moduleID,name,adminUsers,newAdmin, userID) {
+exports.assignAdministrator = function (assignAdministratorRequest) {
     //check if the module exists
-    Space.findOne({'moduleID':moduleID},function (err,result) {
+    Space.findOne({'moduleID': assignAdministratorRequest.moduleID},function (err,result) {
         if (result == null) {
             //throw new Error("NoSuchBuzzSpaceException");
             console.log("Could not find buzz space to close");
         } else {
             console.log("Found module to assign admin to");
             // check if user is an admin for buzz space
-            if (isAuthorized(userId, moduleID)) {
-                result.adminUsers.push(newAdmin);
+            if (isAuthorized(assignAdministratorRequest.userID, assignAdministratorRequest.moduleID)) {
+                result.adminUsers.push(assignAdministratorRequest.newAdmin);
 
                 result.save(function (err) {
                     //res.send(result);
@@ -124,25 +137,75 @@ exports.assignAdministrator = function (academicYear,isOpen,moduleID,name,adminU
         }
     })
 
-    return adminUsers;
+    return assignAdministratorRequest.adminUsers;
 };
 
-exports.removeAdministrator = function (userId, moduleID, adminToRemove) {
+//exports.removeAdministrator = function (userID, moduleID, adminToRemove) {
+exports.removeAdministrator = function (removeAdministratorRequest) {
+	Space.findOne({'moduleID': removeAdministratorRequest.moduleID}, function (err, result) {
+		if (err) {
+			removeAdministratorRequest.callback(err);
+		} else if (result == null) {
+			console.log("Could not find buzz space to remove admin from");
+			removeAdministratorRequest.callback(new Error("NoSuchBuzzSpaceException"));
+		} else {
+			console.log("Found module to remove admin from");
+			
+			// check if user is an admin for buzz space
+			exports.isAdministrator({
+				userID: removeAdministratorRequest.userID, 
+				moduleID: removeAdministratorRequest.moduleID,
+				callback: function (error, response) {
+					if (error) {
+						removeAdministratorRequest.callback(error);
+					} else if (response == false) {
+						console.log("Not an admin of this buzz space");
+						removeAdministratorRequest.callback(new Error("NotAuthorizedException"));
+					} else {
+						// you are an admin, proceed to remove other admin
+						console.log("You are admin of buzz space");
+						
+						// find index of the admin to be removed as specified by removeAdministratorRequest.adminToRemove
+						var index = result.adminUsers.map(function (admin) { 
+							return admin.id; 
+						}).indexOf(parseInt(removeAdministratorRequest.adminToRemove.id, 10) || removeAdministratorRequest.adminToRemove.id);
+						
+						if (index === -1) {
+							console.log("Could not find administrator to remove on the buzz space.");
+						} else {
+							// remove admin from admin group
+							result.adminUsers.splice(index, 1);
+							
+							// save changes
+							result.save(function (err) {
+								//res.send(result);
+							});
+							console.log("Admin removed successfully");
+						}
+						removeAdministratorRequest.callback(null, result);
+					}
+				}
+			});
+		}
+	});
+};
+
+/*exports.removeAdministrator = function (removeAdministratorRequest) {
 
     var obj = {};
-    Space.findOne({'moduleID':moduleID},function (err,result) {
+    Space.findOne({'moduleID': removeAdministratorRequest.moduleID}, function (err, result) {
         if (result == null) {
             //throw new Error("NoSuchBuzzSpaceException");
             console.log("Could not find buzz space to remove admin from");
         } else {
             console.log("Found module to remove admin from");
             // check if user is an admin for buzz space
-            if (isAuthorized(userId, moduleID)) {
+            if (isAuthorized(removeAdministratorRequest.userID, removeAdministratorRequest.moduleID)) {
 
                 // *******************************************
                 // Outline of how to find an admin, please fix
                 // *******************************************
-                var index = result.adminUsers.indexOf(adminToRemove);
+                var index = result.adminUsers.indexOf(removeAdministratorRequest.adminToRemove);
 
                 if (index > -1) {
                     result.adminUsers.splice(index, 1);
@@ -153,7 +216,7 @@ exports.removeAdministrator = function (userId, moduleID, adminToRemove) {
                 // *******************************************
                 // End of outline
                 // *******************************************
-
+		
                 result.save(function (err) {
                     //res.send(result);
                 });
@@ -165,32 +228,38 @@ exports.removeAdministrator = function (userId, moduleID, adminToRemove) {
     })
 
     return obj;
+};*/
+
+//exports.isAdministrator = function(userID,adminUsers)
+exports.isAdministrator = function(isAdministratorRequest) {
+	// check if module exists
+	Space.findOne({'moduleID': isAdministratorRequest.moduleID}, function(err, result) {
+		if (err) {
+			//console.error(err);
+			isAdministratorRequest.callback(err);
+		} else if (result == null) {
+			isAdministratorRequest.callback(new Error("NoSuchBuzzSpaceException"));
+		} else {
+			// check if the user specified by isAdministratorRequest.userId is in the admin group for this buzz space
+			var index = result.adminUsers.map(function (admin) { 
+				return admin.id; 
+			}).indexOf(parseInt(isAdministratorRequest.userID, 10) || isAdministratorRequest.userID);
+			
+			// this user is not an admin for this buzz space
+			if (index === -1) {
+				isAdministratorRequest.callback(null, false);
+			} else {
+				isAdministratorRequest.callback(null, result);
+			}
+		}
+	});
 };
 
-exports.isAdministrator = function(userId,adminUsers)
-{
-    Space.findOne({'userId' : userId}), function(err,result)
-    {
-        if(err)
-        {
-            console.error(err);
-        }
-        else
-        {
-            //assuming admin users are sent via a array
-            var a  = adminUsers.indexOf(result);
-            if(a === -1)
-                return false;
-            else
-                return true;
-        }
-    }
-};
 
-
-exports.getProfileForUser = function(userId)
+//exports.getProfileForUser = function(userID)
+exports.getProfileForUser = function(getProfileForUserRequest)
 {
-    Space.findOne({"userId":userId}), function (err,result)
+    Space.findOne({"userID": getProfileForUserRequest.userID}, function (err,result)
     {
         //User id is sent through and findOne returns object of user with all users info
         if(err)
@@ -201,5 +270,5 @@ exports.getProfileForUser = function(userId)
         {
             return result;
         }
-    }
+    })
 };
