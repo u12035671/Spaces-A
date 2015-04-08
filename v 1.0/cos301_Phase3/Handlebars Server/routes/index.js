@@ -39,15 +39,16 @@ router.get('/closeSpace', function(req, res, next) {
 //Pass to page
 	val = spaces.getBuzzSpaces();
 	console.log("*******************"+val);
-
+	//console.log());
+	/*
 	var result = "<select name='moduleID'>";
 	val.forEach(function(entry){
 		result +="<option value="+entry+">"+entry+"</option>";
 		});
 	result += "</select>";
+*/
 
-
-  res.render('./dynamic_views/closeSpace',{module:result});
+  res.render('./dynamic_views/closeSpace',{module:val});
 });
 
 
