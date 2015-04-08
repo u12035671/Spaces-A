@@ -140,6 +140,8 @@ exports.assignAdministrator = function (assignAdministratorRequest) {
     return assignAdministratorRequest.adminUsers;
 };
 
+
+
 //exports.removeAdministrator = function (userID, moduleID, adminToRemove) {
 exports.removeAdministrator = function (removeAdministratorRequest) {
 	Space.findOne({'moduleID': removeAdministratorRequest.moduleID}, function (err, result) {
