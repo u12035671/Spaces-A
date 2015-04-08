@@ -5,6 +5,9 @@ var router = express.Router();
 
 var spaces = require('../modules/spaces/spaces');
 
+var mongoose = require('mongoose');
+
+
 function getProfile (id) {
  return {title: "user " + id};
 }
@@ -34,7 +37,17 @@ router.get('/createSpace', function(req, res, next) {
 //Close space
 router.get('/closeSpace', function(req, res, next) {
 //Pass to page
-  res.render('./dynamic_views/closeSpace');
+	val = spaces.getBuzzSpaces();
+	console.log("*******************"+val);
+
+	var result = "<select name='moduleID'>";
+	val.forEach(function(entry){
+		result +="<option value="+entry+">"+entry+"</option>";
+		});
+	result += "</select>";
+
+
+  res.render('./dynamic_views/closeSpace',{module:result});
 });
 
 
