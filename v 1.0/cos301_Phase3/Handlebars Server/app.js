@@ -29,6 +29,9 @@ app.use('/logs', scribe.webPanel());
 var connection = require('database'); //Initial connection to the database
 
 //
+var b;
+var a = spaces.getBuzzSpaces(b);
+console.log(b);
 
 /*
  Test code for spaces
