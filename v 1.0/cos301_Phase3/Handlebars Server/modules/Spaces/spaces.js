@@ -272,3 +272,27 @@ exports.getProfileForUser = function(getProfileForUserRequest)
         }
     })
 };
+
+exports.getBuzzSpaces=function()
+{	
+	var val;
+	
+	function load(callback)
+	{
+		val=Space.find({},{moduleID:1,_id:0}, function (err,result) 
+		{
+			console.log(result);
+			return result;
+		});
+		callback('its done',val);
+		
+	}
+	function test(a,result)
+	{
+		console.log(a);
+		console.log(result);
+	}
+	load(test);
+
+	return val;
+};
