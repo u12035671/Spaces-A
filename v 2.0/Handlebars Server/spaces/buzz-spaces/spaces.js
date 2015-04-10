@@ -28,7 +28,17 @@ module.exports = function(database) {
     // Compile schema into a model (class that constructs documents)
     var Space = mongoose.model('Spaces', spacesSchema);;
     // end schema
-
+    
+    
+    var spacesProfileSchema = mongoose.Schema({
+	userNameForBuzzSpace: String,
+	signature: String,
+	userID: String,
+	moduleID: String
+    });
+     
+     var SpaceProfile = mongoose.model('SpacesProfile', spacesProfileSchema);
+    
     /**
      * Dexription....
      * @param userID
@@ -53,7 +63,8 @@ module.exports = function(database) {
             } else if (result == null) {
                 // Module does not exist
                 console.log("Did not find space that should be closed");
-                closeBuzzSpaceRequest.callback(new Error("NoSuchBuzzSpaceException"));
+                //closeBuzzSpaceRequest.callback(new Error("NoSuchBuzzSpaceException"));
+		closeBuzzSpaceRequest.callback("Did not find space that should be closed");    
             } else {
                 // check if user is an admin for buzz space
                 spaces.isAdministrator({
@@ -64,7 +75,8 @@ module.exports = function(database) {
                             closeBuzzSpaceRequest.callback(error);
                         } else if (response == false) {
                             console.log("Not an admin of this buzz space");
-                            closeBuzzSpaceRequest.callback(new Error("NotAuthorizedException"));
+                            //closeBuzzSpaceRequest.callback(new Error("NotAuthorizedException"));
+			    closeBuzzSpaceRequest.callback("Not an admin of this buzz space");	
                         } else {
                             //else module exists, update
                             console.log("Found space that should be closed");
@@ -76,7 +88,8 @@ module.exports = function(database) {
                             });
                             console.log("Space closed successfully");
 
-                            closeBuzzSpaceRequest.callback(null, result);
+                            //closeBuzzSpaceRequest.callback(null, result);
+			    closeBuzzSpaceRequest.callback("Space closed successfully");
                         }
                     }
                 });
@@ -169,7 +182,8 @@ module.exports = function(database) {
                 removeAdministratorRequest.callback(err);
             } else if (result == null) {
                 console.log("Could not find buzz space to remove admin from");
-                removeAdministratorRequest.callback(new Error("NoSuchBuzzSpaceException"));
+                //removeAdministratorRequest.callback(new Error("NoSuchBuzzSpaceException"));
+		removeAdministratorRequest.callback("Could not find buzz space to remove admin from");    
             } else {
                 console.log("Found module to remove admin from");
 
@@ -182,7 +196,8 @@ module.exports = function(database) {
                             removeAdministratorRequest.callback(error);
                         } else if (response == false) {
                             console.log("Not an admin of this buzz space");
-                            removeAdministratorRequest.callback(new Error("NotAuthorizedException"));
+                            //removeAdministratorRequest.callback(new Error("NotAuthorizedException"));
+			    removeAdministratorRequest.callback("Not an admin of this buzz space");
                         } else {
                             // you are an admin, proceed to remove other admin
                             console.log("You are admin of buzz space");
@@ -204,7 +219,8 @@ module.exports = function(database) {
                                 });
                                 console.log("Admin removed successfully");
                             }
-                            removeAdministratorRequest.callback(null, result);
+                            //removeAdministratorRequest.callback(null, result);
+			    removeAdministratorRequest.callback("Admin removed successfully");
                         }
                     }
                 });
@@ -263,7 +279,8 @@ module.exports = function(database) {
                 //console.error(err);
                 isAdministratorRequest.callback(err);
             } else if (result == null) {
-                isAdministratorRequest.callback(new Error("NoSuchBuzzSpaceException"));
+                //isAdministratorRequest.callback(new Error("NoSuchBuzzSpaceException"));
+		isAdministratorRequest.callback("Buzz space does not exist");    
             } else {
                 // check if the user specified by isAdministratorRequest.userId is in the admin group for this buzz space
                 var index = result.adminUsers.map(function (admin) {
@@ -280,23 +297,80 @@ module.exports = function(database) {
         });
     };
 
-    /**
-     *
-     * @param getProfileForUserRequest
-     */
-    spaces.getProfileForUser = function (getProfileForUserRequest) {
-        Space.findOne({"userID": getProfileForUserRequest.userID}, function (err, result) {
-            //User id is sent through and findOne returns object of user with all users info
-            if (err) {
-                console.error(err);
-            }
-            else {
-                return result;
-            }
-        });
-    };
+	/**
+	*
+	* @param getProfileForUserRequest
+	*/
+	spaces.getProfileForUser = function (getProfileForUserRequest) {
+		SpaceProfile.findOne({"userID": getProfileForUserRequest.userID}, function (err, result) {
+			//User id is sent through and findOne returns object of user with all users info
+			if (err) {
+				console.error(err);
+				getProfileForUserRequest.callback(err);
+			}
+			else {
+				//return result;
+				getProfileForUserRequest.callback(null, result);
+			}
+		});
+	};
+	
+	/**
+	*
+	* @param registerOnBuzzSpaceRequest
+	*/
+	spaces.registerOnBuzzSpace = function (registerOnBuzzSpaceRequest) {
+		// check if buzz space exists    
+		Space.findOne({"moduleID": registerOnBuzzSpaceRequest.moduleID}, function (err, result) {
+			if(err) {
+				registerOnBuzzSpaceRequest.callback(err);
+			} else if (result == null) {
+				// module does not exist
+				console.log("Buzz space does not exist");
+				//registerOnBuzzSpaceRequest.callback(new Error("NoSuchBuzzSpaceException"));
+				registerOnBuzzSpaceRequest.callback("Buzz space does not exist");
+			} else {
+				// check if space is active
+				if (result.isOpen === true || result.isOpen === "true") {
+					// check also if profile exists
+					SpaceProfile.findOne({"userID": registerOnBuzzSpaceRequest.userID}, function (err1, result1) {
+						if (err1) {
+							//registerOnBuzzSpaceRequest.callback(err1);
+						} else if (result1 == null) {
+							// create new profile
+							var newSpaceProfile = new SpaceProfile({
+								userNameForBuzzSpace: registerOnBuzzSpaceRequest.userNameForBuzzSpace,
+								signature: registerOnBuzzSpaceRequest.signature,
+								userID: registerOnBuzzSpaceRequest.userID,
+								moduleID: registerOnBuzzSpaceRequest.moduleID
+							});
+							
+							newSpaceProfile.save(function (err2, result2) {
+								if (err) {
+									//registerOnBuzzSpaceRequest.callback(err2);
+									registerOnBuzzSpaceRequest.callback("Could not create profile");
+								} else {
+									console.log("Profile registered successfully");
+									//registerOnBuzzSpaceRequest.callback(null, result2);
+									registerOnBuzzSpaceRequest.callback("Profile created successfully");
+								}
+							});
+						} else {
+							console.log("Space profile already exists");
+							//registerOnBuzzSpaceRequest.callback(null, result1);
+							registerOnBuzzSpaceRequest.callback("Space profile already exists");
+						}
+					});
+				} else {
+					console.log("Buzz space is not active");
+					//registerOnBuzzSpaceRequest.callback(new Error("BuzzSpaceNotActiveException"));
+					registerOnBuzzSpaceRequest.callback("Buzz space is not active");
+				}
+			}
+		});
+	} 	
 
-    return spaces;
+	return spaces;
 };
 
 module.exports['@require'] = ['database'];
