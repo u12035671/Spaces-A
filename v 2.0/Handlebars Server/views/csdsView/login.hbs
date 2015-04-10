@@ -1,0 +1,39 @@
+<body>
+<h1>Welcome to COS301</h1>
+
+<div>
+    <form id = "csdslogin" action="/submitCSDS" method="post">
+        <ul style="list-style-type: none;">
+            <li>
+                <td><strong>Login</strong></td>
+            </li>
+            <br/>
+
+            <li>
+                <td>Username</td>
+                <td>
+                    <input type="textbox" id="csdsUsername" name="csdsUsername">
+                </td>
+            </li>
+
+            <li>
+                <td>Password</td>
+                <td>
+                    <input type="password" id="csdsPassword" name="csdsPassword">
+                </td>
+            </li>
+
+            </li>
+
+            <li>
+                <td>
+                    <input type="Submit" value="Login">
+                </td>
+            </li>
+        </ul>
+    </form>
+</div>
+<div>
+    {{LoginResult}}
+</div>
+</body>

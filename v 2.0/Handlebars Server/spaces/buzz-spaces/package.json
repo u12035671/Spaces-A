@@ -1,0 +1,19 @@
+{
+  "name": "buzz-spaces",
+  "version": "1.0.0",
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {
+    "unit.js": "^1.1.3"
+  },
+  "main": "./spaces.js",
+  "_id": "buzz-spaces@1.0.0",
+  "dist": {
+    "shasum": "2153128441bccf7f7f9ecaff4a5f5404a13687ee",
+    "tarball": "https://npm.fury.io/babalela01/buzz-spaces/-/1.0.0.tgz?auth=CfpayRr6jyfNxXyXFHqj"
+  },
+  "_shasum": "2153128441bccf7f7f9ecaff4a5f5404a13687ee",
+  "_from": "buzz-spaces@>=0.0.1",
+  "_resolved": "https://npm.fury.io/babalela01/buzz-spaces/-/1.0.0.tgz?auth=CfpayRr6jyfNxXyXFHqj",
+  "readme": "ERROR: No README data found!"
+}

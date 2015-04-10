@@ -281,18 +281,19 @@ exports.getBuzzSpaces=function()
 	
 	function load(callback)
 	{
-		val=Space.find({},{moduleID:1,_id:0}, function (err,result) 
+		//console.log("Before get from db");
+		val=Space.find({}, function (err,result) 
 		{
 			console.log(result);
-			return result;
+			return JSON.stringify(result);
 		});
 		callback('its done',val);
 		
 	}
 	function test(a,result)
 	{
-		console.log(a);
-		console.log(result);
+		//console.log(a);
+		//console.log(result);
 	}
 	load(test);
 
