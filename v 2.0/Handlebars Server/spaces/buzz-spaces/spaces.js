@@ -28,7 +28,17 @@ module.exports = function(database) {
     // Compile schema into a model (class that constructs documents)
     var Space = mongoose.model('Spaces', spacesSchema);;
     // end schema
-
+    
+    
+    var spacesProfileSchema = mongoose.Schema({
+	userNameForBuzzSpace: String,
+	signature: String,
+	userID: String,
+	moduleID: String
+    });
+     
+     var SpaceProfile = mongoose.model('SpacesProfile', spacesProfileSchema);
+    
     /**
      * Dexription....
      * @param userID
@@ -280,23 +290,76 @@ module.exports = function(database) {
         });
     };
 
-    /**
-     *
-     * @param getProfileForUserRequest
-     */
-    spaces.getProfileForUser = function (getProfileForUserRequest) {
-        Space.findOne({"userID": getProfileForUserRequest.userID}, function (err, result) {
-            //User id is sent through and findOne returns object of user with all users info
-            if (err) {
-                console.error(err);
-            }
-            else {
-                return result;
-            }
-        });
-    };
+	/**
+	*
+	* @param getProfileForUserRequest
+	*/
+	spaces.getProfileForUser = function (getProfileForUserRequest) {
+		SpaceProfile.findOne({"userID": getProfileForUserRequest.userID}, function (err, result) {
+			//User id is sent through and findOne returns object of user with all users info
+			if (err) {
+				console.error(err);
+				getProfileForUserRequest.callback(err);
+			}
+			else {
+				//return result;
+				getProfileForUserRequest.callback(null, result);
+			}
+		});
+	};
+	
+	/**
+	*
+	* @param registerOnBuzzSpaceRequest
+	*/
+	spaces.registerOnBuzzSpace = function (registerOnBuzzSpaceRequest) {
+		// check if buzz space exists    
+		Space.findOne({"moduleID": registerOnBuzzSpaceRequest.moduleID}, function (err, result) {
+			if(err) {
+				registerOnBuzzSpaceRequest.callback(err);
+			} else if (result == null) {
+				// module does not exist
+				console.log("Buzz space does not exist");
+				registerOnBuzzSpaceRequest.callback(new Error("NoSuchBuzzSpaceException"));
+			} else {
+				// check if space is active
+				if (result.isOpen === true || result.isOpen === "true") {
+					// check also if profile exists
+					SpaceProfile.findOne({"userID": registerOnBuzzSpaceRequest.userID}, function (err1, result1) {
+						if (err1) {
+							registerOnBuzzSpaceRequest.callback(err1);
+						} else if (result1 == null) {
+							// create new profile
+							var newSpaceProfile = new SpaceProfile({
+								userNameForBuzzSpace: registerOnBuzzSpaceRequest.userNameForBuzzSpace,
+								signature: registerOnBuzzSpaceRequest.signature,
+								userID: registerOnBuzzSpaceRequest.userID,
+								moduleID: registerOnBuzzSpaceRequest.moduleID
+							});
+							
+							newSpaceProfile.save(function (err2, result2) {
+								if (err) {
+									registerOnBuzzSpaceRequest.callback(err2);
+								} else {
+									console.log("Profile registered successfully");
+									//registerOnBuzzSpaceRequest.callback(null, result2);
+									registerOnBuzzSpaceRequest.callback(null, "Profile created successfully");
+								}
+							});
+						} else {
+							console.log("Space profile already exists");
+							registerOnBuzzSpaceRequest.callback(null, result1);
+						}
+					});
+				} else {
+					console.log("Buzz space is not active");
+					registerOnBuzzSpaceRequest.callback(new Error("BuzzSpaceNotActiveException"));
+				}
+			}
+		});
+	} 	
 
-    return spaces;
+	return spaces;
 };
 
 module.exports['@require'] = ['database'];
