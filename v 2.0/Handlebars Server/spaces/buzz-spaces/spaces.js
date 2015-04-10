@@ -63,7 +63,8 @@ module.exports = function(database) {
             } else if (result == null) {
                 // Module does not exist
                 console.log("Did not find space that should be closed");
-                closeBuzzSpaceRequest.callback(new Error("NoSuchBuzzSpaceException"));
+                //closeBuzzSpaceRequest.callback(new Error("NoSuchBuzzSpaceException"));
+		closeBuzzSpaceRequest.callback("Did not find space that should be closed");    
             } else {
                 // check if user is an admin for buzz space
                 spaces.isAdministrator({
@@ -74,7 +75,8 @@ module.exports = function(database) {
                             closeBuzzSpaceRequest.callback(error);
                         } else if (response == false) {
                             console.log("Not an admin of this buzz space");
-                            closeBuzzSpaceRequest.callback(new Error("NotAuthorizedException"));
+                            //closeBuzzSpaceRequest.callback(new Error("NotAuthorizedException"));
+			    closeBuzzSpaceRequest.callback("Not an admin of this buzz space");	
                         } else {
                             //else module exists, update
                             console.log("Found space that should be closed");
@@ -86,7 +88,8 @@ module.exports = function(database) {
                             });
                             console.log("Space closed successfully");
 
-                            closeBuzzSpaceRequest.callback(null, result);
+                            //closeBuzzSpaceRequest.callback(null, result);
+			    closeBuzzSpaceRequest.callback("Space closed successfully");
                         }
                     }
                 });
@@ -179,7 +182,8 @@ module.exports = function(database) {
                 removeAdministratorRequest.callback(err);
             } else if (result == null) {
                 console.log("Could not find buzz space to remove admin from");
-                removeAdministratorRequest.callback(new Error("NoSuchBuzzSpaceException"));
+                //removeAdministratorRequest.callback(new Error("NoSuchBuzzSpaceException"));
+		removeAdministratorRequest.callback("Could not find buzz space to remove admin from");    
             } else {
                 console.log("Found module to remove admin from");
 
@@ -192,7 +196,8 @@ module.exports = function(database) {
                             removeAdministratorRequest.callback(error);
                         } else if (response == false) {
                             console.log("Not an admin of this buzz space");
-                            removeAdministratorRequest.callback(new Error("NotAuthorizedException"));
+                            //removeAdministratorRequest.callback(new Error("NotAuthorizedException"));
+			    removeAdministratorRequest.callback("Not an admin of this buzz space");
                         } else {
                             // you are an admin, proceed to remove other admin
                             console.log("You are admin of buzz space");
@@ -214,7 +219,8 @@ module.exports = function(database) {
                                 });
                                 console.log("Admin removed successfully");
                             }
-                            removeAdministratorRequest.callback(null, result);
+                            //removeAdministratorRequest.callback(null, result);
+			    removeAdministratorRequest.callback("Admin removed successfully");
                         }
                     }
                 });
@@ -273,7 +279,8 @@ module.exports = function(database) {
                 //console.error(err);
                 isAdministratorRequest.callback(err);
             } else if (result == null) {
-                isAdministratorRequest.callback(new Error("NoSuchBuzzSpaceException"));
+                //isAdministratorRequest.callback(new Error("NoSuchBuzzSpaceException"));
+		isAdministratorRequest.callback("Buzz space does not exist");    
             } else {
                 // check if the user specified by isAdministratorRequest.userId is in the admin group for this buzz space
                 var index = result.adminUsers.map(function (admin) {
