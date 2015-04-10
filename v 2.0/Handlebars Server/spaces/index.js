@@ -301,7 +301,7 @@ router.post('/submitNotifyOptions',function(req, res, next){
         res.render('./dynamic_views/adminManagement',{message: result});
     });
 
-router.get('/createSpace', function(req, res, next) {
+router.get('/registerUser', function(req, res, next) {
 //Pass to page
   res.render('./dynamic_views/registerUser');
 });
@@ -314,14 +314,14 @@ router.post('/submitRU', function(req, res, next){
 	console.log("test ["+req.body.RUmoduleid+"]");
 	*/
 	var obj ={};
-		obj.userName=req.body.RUuserName;
+		obj.userNameForBuzzSpace=req.body.RUuserName;
 		obj.signature=req.body.RUsignature;
 		obj.userID=req.body.RUuserid;
 		obj.moduleID=req.body.RUmoduleid;
 		
 	var result = spaces.createBuzzSpace(obj);
 	
-	console.log("this is the result " + result);
+	//console.log("this is the result " + result);
 	res.render('./dynamic_views/registerUser',{message: result});
 });
 
