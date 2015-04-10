@@ -320,14 +320,15 @@ module.exports = function(database) {
 			} else if (result == null) {
 				// module does not exist
 				console.log("Buzz space does not exist");
-				registerOnBuzzSpaceRequest.callback(new Error("NoSuchBuzzSpaceException"));
+				//registerOnBuzzSpaceRequest.callback(new Error("NoSuchBuzzSpaceException"));
+				registerOnBuzzSpaceRequest.callback("Buzz space does not exist");
 			} else {
 				// check if space is active
 				if (result.isOpen === true || result.isOpen === "true") {
 					// check also if profile exists
 					SpaceProfile.findOne({"userID": registerOnBuzzSpaceRequest.userID}, function (err1, result1) {
 						if (err1) {
-							registerOnBuzzSpaceRequest.callback(err1);
+							//registerOnBuzzSpaceRequest.callback(err1);
 						} else if (result1 == null) {
 							// create new profile
 							var newSpaceProfile = new SpaceProfile({
@@ -339,21 +340,24 @@ module.exports = function(database) {
 							
 							newSpaceProfile.save(function (err2, result2) {
 								if (err) {
-									registerOnBuzzSpaceRequest.callback(err2);
+									//registerOnBuzzSpaceRequest.callback(err2);
+									registerOnBuzzSpaceRequest.callback("Could not create profile");
 								} else {
 									console.log("Profile registered successfully");
 									//registerOnBuzzSpaceRequest.callback(null, result2);
-									registerOnBuzzSpaceRequest.callback(null, "Profile created successfully");
+									registerOnBuzzSpaceRequest.callback("Profile created successfully");
 								}
 							});
 						} else {
 							console.log("Space profile already exists");
-							registerOnBuzzSpaceRequest.callback(null, result1);
+							//registerOnBuzzSpaceRequest.callback(null, result1);
+							registerOnBuzzSpaceRequest.callback("Space profile already exists");
 						}
 					});
 				} else {
 					console.log("Buzz space is not active");
-					registerOnBuzzSpaceRequest.callback(new Error("BuzzSpaceNotActiveException"));
+					//registerOnBuzzSpaceRequest.callback(new Error("BuzzSpaceNotActiveException"));
+					registerOnBuzzSpaceRequest.callback("Buzz space is not active");
 				}
 			}
 		});
