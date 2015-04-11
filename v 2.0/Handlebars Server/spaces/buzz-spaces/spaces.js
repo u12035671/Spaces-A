@@ -50,7 +50,11 @@ module.exports = function(database) {
     }
     var spaces = {};
     //exports.closeBuzzSpace = function (userID, moduleID) {
-
+    /*jsonDoc
+    CloseBuzzSpace will allow a user to disable the buzz space from showing in the interface and will keep it with
+    all its data still in the database. The function simply sets a isOpen field to false so it will no longer
+    be displayed
+     */
     /**
      *
      * @param closeBuzzSpaceRequest
@@ -97,7 +101,13 @@ module.exports = function(database) {
         });
     };
 
-
+    /* jsonDoc
+     The register on buzz space use case requires the creation of a space so users can create posts on each space.
+     The function uses the globally defined schema for spaces, in order to create a new space object with a root thread.
+     This new object will contain all the data entered by the user in the interface. The object will then be stored to the database,
+     using the mongoose schema and the object will be returned by the function. This will then realise the post condition of having
+     stored a space to the database.
+     */
     //exports.createBuzzSpace = function (academicYear,isOpen,moduleID,name,adminUsers) {
     /**
      *
@@ -140,7 +150,10 @@ module.exports = function(database) {
 
         return newBuzzSpace;
     };
-
+    /* jsonDoc
+        This function can only be called by the creator of the buzzspace. It will add a list of user ids that will be
+         granted admin privileges on the buzzspace into the mongoose database with a reference to the buzzspace.
+     */
     //exports.assignAdministrator = function (academicYear,isOpen,moduleID,name,adminUsers,newAdmin, userID) {
     /**
      *
@@ -152,7 +165,7 @@ module.exports = function(database) {
         Space.findOne({'moduleID': assignAdministratorRequest.moduleID}, function (err, result) {
             if (result == null) {
                 //throw new Error("NoSuchBuzzSpaceException");
-                console.log("Could not find buzz space to close");
+                console.log("Could not find buzz space to assign admin to");
             } else {
                 console.log("Found module to assign admin to");
                 // check if user is an admin for buzz space
@@ -170,7 +183,10 @@ module.exports = function(database) {
 
         return assignAdministratorRequest.adminUsers;
     };
-
+    /* jsonDoc
+    This function is used by the creator of the buzzspace to remove user ids from the stored list that no longer have
+    admin privileges on the specific buzzspaces.
+     */
     //exports.removeAdministrator = function (userID, moduleID, adminToRemove) {
     /**
      *
@@ -267,7 +283,11 @@ module.exports = function(database) {
 
      return obj;
      };*/
-
+    /* json doc
+        this function checks that the user id is in the list of ids that have been granted admin
+        privilages on the specific buzzspace. if the user id is not in the list it returns false else
+        it returns the buzzspace module the user is admin of
+     */
     /**
      *
      * @param isAdministratorRequest
@@ -296,7 +316,9 @@ module.exports = function(database) {
             }
         });
     };
-
+    /*jsonDoc
+        This function will return all the information from the database about one user in a specific buzz space.
+     */
 	/**
 	*
 	* @param getProfileForUserRequest
@@ -314,7 +336,11 @@ module.exports = function(database) {
 			}
 		});
 	};
-	
+	/*jsonDoc
+     registerOnBuzzSpace stores a profile for a user for that specific buzzspace. this will be used to keep track of
+     the users activity and contribution on the specific space. The profile is stored in the database with a reference
+     to the user and the buzzspace.
+	 */
 	/**
 	*
 	* @param registerOnBuzzSpaceRequest
