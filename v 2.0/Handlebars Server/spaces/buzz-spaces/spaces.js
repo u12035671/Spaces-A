@@ -40,7 +40,7 @@ module.exports = function(database) {
      var SpaceProfile = mongoose.model('SpacesProfile', spacesProfileSchema);
     
     /**
-     * Dexription....
+     * Description....
      * @param userID
      * @param moduleID
      * @returns {boolean}
