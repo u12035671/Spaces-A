@@ -29,15 +29,68 @@ app.use('/logs', scribe.webPanel());
 var connection = require('database'); //Initial connection to the database
 
 //
+var b;
+var a = spaces.getBuzzSpaces(b);
+console.log(b);
 
 /*
  Test code for spaces
 
  *//*
-spaces.createBuzzSpace(2015,true,'ddd','Jan',[{id:1},{id:2}]);
-console.log(spaces.closeBuzzSpace('1','ccc'));
-console.log(spaces.assignAdministrator('2015', true, 'zzz', 'Jan', [{id:1},{id:2}], {id:3}, '1'));
-console.log(spaces.removeAdministrator('1', 'zzz', {id:2}));
+console.log(
+	spaces.createBuzzSpace({
+		academicYear: 2015,
+		isOpen: true,
+		moduleID: 'bbb',
+		name: 'Jan',
+		adminUsers: [{id:1},{id:2}]
+	})
+);
+spaces.closeBuzzSpace({
+	userID: '2',
+	moduleID: 'aaa',
+	callback: function (err, response) {
+		if (err)
+			console.log(err);
+		else
+			console.log(response);
+	}
+});
+console.log(
+	spaces.assignAdministrator({
+		academicYear: '2015', 
+		isOpen: true, 
+		moduleID: 'zzz', 
+		name: 'Jan', 
+		adminUsers: [{id:1},{id:2}], 
+		newAdmin: {id:3}, 
+		userID: '1'
+	})
+);
+spaces.removeAdministrator({
+	userID: '1', 
+	moduleID: 'zzz', 
+	adminToRemove: {id:3},
+	callback: function (err, response) {
+		if (err)
+			console.log(err);
+		else
+			console.log(response);
+	}
+});
+spaces.isAdministrator({
+	userID: '3',
+	moduleID: 'zzz',
+	callback: function (err, response) {
+		if (err)
+			console.log(err);
+		else
+			console.log(response);
+	}
+});
+console.log(
+	spaces.getProfileForUser({userID: '1'})
+);
 *//*
 
 /////////////////TONIA ADDED Testing of notification module
