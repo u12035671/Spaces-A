@@ -3,6 +3,7 @@ var app = express();
 module.exports = app;
 
 
+
 var path = require('path');
 var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
@@ -77,3 +78,5 @@ app.use(function(err, req, res, next) {
     });
 });
 
+var test = require('./spaces/Unit_Tests/test.js');
+var testThis = test.testAll();

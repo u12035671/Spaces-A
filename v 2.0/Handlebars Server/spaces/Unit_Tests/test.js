@@ -1,4 +1,4 @@
-var spaces = require('./buzz-spaces/spaces.js');
+var spaces = require('../buzz-spaces/spaces.js');
 	
 	function testAssignAdmin()
 	{
@@ -12,6 +12,7 @@ var spaces = require('./buzz-spaces/spaces.js');
 	}
 	
 	function testRemoveAdmin()
+	{
 		var removeAdminObj = {};
 			removeAdminObj.moduleID='zzz';
 			removeAdminObj.userID='1';
@@ -42,8 +43,8 @@ var spaces = require('./buzz-spaces/spaces.js');
 		var registerObj = {};
 			registerObj.moduleID='zzz';
 			registerObj.userID='1';
-			registerObj.userNameForBuzzSpace=//username//;
-			registerObj.signature=//signature//;
+			registerObj.userNameForBuzzSpace='username';
+			registerObj.signature='signature';
 			
 		var resultRegisterOnBuzz = spaces.registerOnBuzzSpace(registerObj);   
 	}
@@ -56,21 +57,21 @@ function testCreateAndClose()
 		createSpaceTest1.academicYear='2';
         createSpaceTest1.isOpen='yes';
         createSpaceTest1.moduleID='1';
-        createSpaceTest1.name'test';
+        createSpaceTest1.name='test';
         createSpaceTest1.adminUsers=0;
 		
 	var createSpaceTest2 = {};
 		createSpaceTest2.academicYear='2';
         createSpaceTest2.isOpen='yes';
         createSpaceTest2.moduleID='1';
-        createSpaceTest2.name'test';
+        createSpaceTest2.name='test';
         createSpaceTest2.adminUsers=0;
 		
 	var createSpaceTest3 = {};
 		createSpaceTest3.academicYear='1';
         createSpaceTest3.isOpen='yes';
         createSpaceTest3.moduleID='2';
-        createSpaceTest3.name'test2';
+        createSpaceTest3.name='test2';
         createSpaceTest3.adminUsers=0;
 	
 	//Create two new spaces to test
@@ -92,4 +93,12 @@ function testAll()
 {
 	testCreateAndClose();
 	Console.log("testing create and close");
+	
+	////
+	testAssignAdmin();
+	testRemoveAdmin();
+	testIsAdmin();
+	testGetProfile();
+	testRegisterOnBuzz();
+	Console.log("Done testing");
 }
