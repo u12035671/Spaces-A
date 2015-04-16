@@ -1,5 +1,5 @@
 
-var spaces = require('../buzz-spaces/spaces.js');
+var spaces = require('../buzz-spaces/spaces');
 var express  = require('express');
 var exports = module.exports = {};
 
@@ -78,17 +78,17 @@ function testCreateAndClose()
         createSpaceTest3.adminUsers=0;
 	
 	//Create two new spaces to test
-	var testCreate1 = spaces.createBuzzSpace(createSpaceTest1);
-	var testCreate2 = spaces.createBuzzSpace(createSpaceTest2);
+	var testCreate1 = function (){ spaces.createBuzzSpace(createSpaceTest1);}
+	var testCreate2 = function(){spaces.createBuzzSpace(createSpaceTest2);}
 	
 	//Delete one of the earlier created spaces to test
-	var testClose1 = spaces.closeBuzzSpace(createSpaceTest2);
+	var testClose1 = function(){spaces.closeBuzzSpace(createSpaceTest2);}
 	
 	//Create the deleted space once again
-	var testCreate3 = spaces.createBuzzSpace(createSpaceTest2);
+	var testCreate3 = function(){spaces.createBuzzSpace(createSpaceTest2);}
 	
 	//Delete a non existing space
-	var testClose2 = spaces.closeBuzzSpace(createSpaceTest3);
+	var testClose2 = function(){spaces.closeBuzzSpace(createSpaceTest3);}
 
 
 
@@ -98,7 +98,7 @@ exports.testAll = function()
 {
     testCreateAndClose();
     console.log("testing create and close");
-    ///
+    ////
     testAssignAdmin();
     testRemoveAdmin();
     testIsAdmin();
