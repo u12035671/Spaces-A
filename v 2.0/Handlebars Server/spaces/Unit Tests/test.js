@@ -73,3 +73,9 @@ function testCreateAndClose()
 	var testClose2 = spaces.closeBuzzSpace(createSpaceTest3);
 	
 }
+
+function testAll()
+{
+	testCreateAndClose();
+	Console.log("testing create and close");
+}
