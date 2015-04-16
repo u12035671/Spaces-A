@@ -170,7 +170,7 @@ module.exports = function(database) {
                 console.log("Found module to assign admin to");
                 // check if user is an admin for buzz space
                 if (isAuthorized(assignAdministratorRequest.userID, assignAdministratorRequest.moduleID)) {
-                    result.adminUsers.push(assignAdministratorRequest.newAdmin);
+                    result.adminUsers.push(assignAdministratorRequest.userID);
 
                     result.save(function (err) {
                         //res.send(result);
