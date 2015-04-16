@@ -1,4 +1,4 @@
-exports = module.exports = function (spaces){
+//exports = module.exports = function (spaces){
 var spaces = require('../buzz-spaces/spaces.js');
 
 	
@@ -88,7 +88,6 @@ function testCreateAndClose()
 	
 	//Delete a non existing space
 	var testClose2 = spaces.closeBuzzSpace(createSpaceTest3);
-	return;
 }
 
 
@@ -104,5 +103,5 @@ exports.testAll = function()
 	testRegisterOnBuzz();
 	Console.log("Done testing");
 }
-}
-exports['@require'] = ['buzz-spaces'];
+//}
+//exports['@require'] = ['buzz-spaces'];
