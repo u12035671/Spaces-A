@@ -1,8 +1,9 @@
-//exports = module.exports = function (spaces){
-var spaces = require('../buzz-spaces/spaces.js');
 
-	
-	function testAssignAdmin()
+var spaces = require('../buzz-spaces/spaces.js');
+var express  = require('express');
+var exports = module.exports = {};
+
+function testAssignAdmin()
 	{
 		var assignAdminObj = {};
 			assignAdminObj.moduleID='zzz';
@@ -11,9 +12,9 @@ var spaces = require('../buzz-spaces/spaces.js');
 			assignAdminObj.adminUsers=[{id:1},{id:2}];
 		
 		var resultAssignAdmin = spaces.assignAdministrator(assignAdminObj);   
-	}
-	
-	function testRemoveAdmin()
+	};
+
+    function testRemoveAdmin()
 	{
 		var removeAdminObj = {};
 			removeAdminObj.moduleID='zzz';
@@ -21,26 +22,26 @@ var spaces = require('../buzz-spaces/spaces.js');
 			removeAdminObj.adminToRemove={id:3};
 			
 		var resultRemoveAdmin = spaces.removeAdministrator(removeAdminObj);   
-	}
-	
-	function testIsAdmin()
+	};
+
+function testIsAdmin()
 	{
 		var isAdminObj = {};
 			isAdminObj.moduleID='zzz';
 			isAdminObj.userID='1';
 			
 		var resultIsAdmin = spaces.isAdministrator(isAdminObj);  
-	}
-	
-	function testGetProfile()
+	};
+
+function testGetProfile()
 	{
 		var getProfileObj = {};
 			getProfileObj.userID='1';
 			
 		var resultGetProfile = spaces.getProfileForUser(getProfileObj); 
-	}
-	
-	function testRegisterOnBuzz()
+	};
+
+function testRegisterOnBuzz()
 	{
 		var registerObj = {};
 			registerObj.moduleID='zzz';
@@ -49,7 +50,7 @@ var spaces = require('../buzz-spaces/spaces.js');
 			registerObj.signature='signature';
 			
 		var resultRegisterOnBuzz = spaces.registerOnBuzzSpace(registerObj);   
-	}
+	};
 	
 //Ivan please add your 2 functions below this comment, I am busy with mine above this line
 
@@ -88,20 +89,22 @@ function testCreateAndClose()
 	
 	//Delete a non existing space
 	var testClose2 = spaces.closeBuzzSpace(createSpaceTest3);
-}
 
+
+
+};
 
 exports.testAll = function()
 {
-	testCreateAndClose();
-	console.log("testing create and close");
-	///
-	testAssignAdmin();
-	testRemoveAdmin();
-	testIsAdmin();
-	testGetProfile();
-	testRegisterOnBuzz();
-	Console.log("Done testing");
-}
-//}
-//exports['@require'] = ['buzz-spaces'];
+    testCreateAndClose();
+    console.log("testing create and close");
+    ///
+    testAssignAdmin();
+    testRemoveAdmin();
+    testIsAdmin();
+    testGetProfile();
+    testRegisterOnBuzz();
+    console.log("Done testing");
+};
+
+return module.exports;
